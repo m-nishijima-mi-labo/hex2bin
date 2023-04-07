@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>16進文字列からバイナリファイル生成</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    textarea {
+      width: 100%;
+      height: 2048px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>16進文字列からバイナリファイル生成</h1>
+  <textarea id="input" placeholder="16進文字列を入力してください"></textarea>
+  <button id="generate">バイナリファイルを生成</button>
+
+  <script>
+    document.getElementById('generate').addEventListener('click', () => {
+      const input = document.getElementById('input');
+      const hexString = input.value.trim();
+
+      if (!/^([0-9a-fA-F]{2})+$/.test(hexString)) {
+        alert('正しい16進文字列を入力してください。');
+        return;
+      }
+
+      const byteArray = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+      const blob = new Blob([byteArray], { type: 'application/octet-binary' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'output.bin';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  </script>
+</body>
+</html>
